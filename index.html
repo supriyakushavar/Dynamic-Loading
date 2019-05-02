@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />    
+    <link href="site.css" rel="stylesheet" />
+    <title>Ajax Dynamic Loading</title>
+</head>
+<body>
+    
+    <nav class="nav">
+        <button class="btn btn-primary">Home</button>
+        <button class="btn btn-primary" data-source="about.html" onclick="sendTheAJAX()" >About Page</button>
+        <button class="btn btn-primary" data-source="contact.html" onclick="sendTheAJAX()" >Contact Page</button>
+    </nav>
+
+    <div id="box-spiner"></div>
+    <div id="ajax-content"></div>
+    <script>
+            var httpRequest;
+            function sendTheAJAX(){
+                var pageData = event.target.getAttribute("data-source");
+                httpRequest =  new XMLHttpRequest();
+                if(!httpRequest){
+                    alert('Cannot create XMLHttp Request');
+                    return false;
+                }
+                var fontIcon = document.createElement('i');
+                fontIcon.style.fontSize = 200 + "px";
+                fontIcon.classList.add("fas", "fa-spinner" , "fa-spin" , "mr-2");
+                var spinerBox = document.getElementById("box-spiner");
+                spinerBox.style.textAlign = "center";
+                spinerBox.appendChild(fontIcon);
+                setTimeout(function(){
+                    fontIcon.style.display = "none";
+                    httpRequest.onreadystatechange = alertContent;
+                    httpRequest.open('GET' , pageData);
+                    httpRequest.send();
+                }, 3000);
+            }
+            
+            function alertContent(){
+                try{
+                    if(httpRequest.readyState == 4){
+                        if(httpRequest.status == 200){
+                            document.getElementById("ajax-content").innerHTML = httpRequest.responseText;
+                        }else{
+                            alert("Theres was problem with the request");
+                        }
+                    }
+                }
+                catch(e){
+                    alert("Caught Exception :" + e.description);
+                }
+            }
+    </script>
+</body>
+</html>
